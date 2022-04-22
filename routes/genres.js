@@ -1,8 +1,6 @@
-const Joi = require('joi');
 const express = require('express');
-const app = express();
-
-app.use(express.json());
+const Joi = require('joi');
+const router = express.Router();
 
 const genres = [{
     id: 1,
@@ -18,20 +16,19 @@ const genres = [{
     name: 'Comedy'
 }];
 
-const port = process.env.PORT || 3000;
 
-app.get('/api/genres', (req, res) => {
+router.get('/', (req, res) => {
     res.send(genres);
 })
 
-app.get('/api/genres/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     const genre = genres.find(c => c.id === parseInt(req.params.id));
-    if (!genre) return res.status(404).send(`Course with this ID doesn't exist`);
+    if (!genre) return res.status(404).send(`Genre with this ID doesn't exist`);
 
     res.send(genre);
 })
 
-app.post('/api/genres', (req, res) => {
+router.post('/', (req, res) => {
     const {
         error
     } = validateGenre(req.body);
@@ -47,7 +44,7 @@ app.post('/api/genres', (req, res) => {
     res.send(genre);
 });
 
-app.put('/api/genres/:id', (req, res) => {
+router.put('/:id', (req, res) => {
 
     const genre = genres.find(c => c.id === parseInt(req.params.id));
     if (!genre) return res.status(404).send(`Course with this ID doesn't exist`);
@@ -62,7 +59,7 @@ app.put('/api/genres/:id', (req, res) => {
     res.send(genre);
 })
 
-app.delete('/api/genres/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     const genre = genres.find(c => c.id === parseInt(req.params.id));
     if (!genre) return res.status(404).send(`Course with this ID doesn't exist`);
 
@@ -80,5 +77,4 @@ function validateGenre(genre) {
     return genreSchema.validate(genre);
 }
 
-
-app.listen(port, () => console.log(`listening on ${port}`));
+module.exports = router;
